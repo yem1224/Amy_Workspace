@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.yem.payapi.payment.db.PaymentMapper">
+
+     <!-- 결제거래기본 테이블 select -->
+    <select id="selectPayTransBase" parameterType="com.yem.payapi.common.vo.CommonVO"  resultType="com.yem.payapi.common.vo.CommonVO">
+        select trans_dv
+              , card_no
+              , instm_month
+              , exp_dt
+              , cvc
+              , trans_amt
+              , val_add_tax
+              , org_unique_id
+              , string_data
+              , ctt
+              , reg_dtm
+              , reg_usr 
+        from pay_trans_base
+        where
+            unique_id = #{unique_id}
+    </select>
+     
+     
+    <!-- 결제거래기본 테이블 insert-->
+    <insert id="insertPayTransBase">
+        insert into pay_trans_base(
+              unique_id
+              , trans_dv
+              , card_no
+              , instm_month
+              , exp_dt
+              , cvc
+              , trans_amt
+              , val_add_tax
+              , org_unique_id
+              , string_data
+              , ctt
+              , reg_dtm
+              , reg_usr
+         )
+        values(
+            #{unique_id} 
+              ,  #{trans_dv}
+              ,  #{card_no}
+              ,  #{instm_month}
+              ,  #{exp_dt}
+              ,  #{cvc}
+              ,  #{trans_amt}
+              ,  #{val_add_tax}
+              ,  #{org_unique_id}
+              ,  #{string_data}
+              ,  #{ctt}
+              ,  now()
+              ,  #{reg_usr}
+            )  
+    </insert>
+    
+    <!-- 관리번호 최대값 조회 -->
+    <select id="selectMaxUniqueId" parameterType="com.yem.payapi.common.vo.CommonVO" resultType="com.yem.payapi.common.vo.CommonVO">
+        select max(unique_id)
+          from pay_trans_base
+    </select>
+    
+     <!-- 결제거래상세 테이블 select -->
+    <select id="selectPayTransDtls" parameterType="com.yem.payapi.common.vo.CommonVO"  resultType="com.yem.payapi.common.vo.CommonVO">
+        select trans_seq
+              , success_yn
+              , trans_dv
+              , unique_id
+              , org_unique_id
+              , status
+              , trans_amt
+              , val_add_tax
+              , pay_amt
+              , pay_val_add_tax
+              , ctt
+              , reg_dtm
+              , reg_usr 
+        from pay_trans_base
+        where
+            unique_id = #{unique_id}
+    </select>
+    
+    <!-- 결제거래상세 테이블 insert-->
+    <insert id="insertPayTransDtls">
+        insert into pay_trans_dtls(
+              success_yn
+              , trans_dv
+              , unique_id
+              , org_unique_id
+              , status
+              , trans_amt
+              , val_add_tax
+              , pay_amt
+              , pay_val_add_tax              
+              , ctt
+              , reg_dtm
+              , reg_usr
+         )
+        values(
+            #{success_yn} 
+              ,  #{trans_dv}
+              ,  #{unique_id}
+              ,  #{org_unique_id}
+              ,  #{status}
+              ,  #{trans_amt}
+              ,  #{val_add_tax}
+              ,  #{pay_amt}
+              ,  #{pay_val_add_tax}              
+              ,  #{ctt}
+              ,  now()
+              ,  #{reg_usr}
+            )  
+    </insert>
+    
+</mapper>
+ 
