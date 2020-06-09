@@ -85,7 +85,6 @@ Spring Framework (Maven)
  - 각 API에 공통적으로 사용하는 기능(부가가치세 계산, 관리번호 채번, 데이터 체크) 
  - PaymentServiceImpl 에 비즈니스로직을 구현
  
- 
 7) 테스트 : 각 API를 단위테스트하며 미구현부분을 작성 후 해결 
 
 
