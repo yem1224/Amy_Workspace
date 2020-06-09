@@ -5,7 +5,7 @@ public class CommonVO {
     private String unique_id; //관리번호
     
     private String trans_dv = ""; //거래 구분(PAYMENT:결제, CANCEL:취소)
-    private int card_no; //카드번호 
+    private String card_no; //카드번호 
     private int exp_dt; //유효기간
     private int cvc; //cvc
     private String instm_month; //할부개월수
@@ -51,10 +51,10 @@ public class CommonVO {
      * 카드번호 
      * @return card_no
      */
-    public int getCardNo() {
+    public String getCardNo() {
         return card_no;
     }
-    public void setCardNo(int card_no) {
+    public void setCardNo(String card_no) {
         this.card_no = card_no;
     }
     

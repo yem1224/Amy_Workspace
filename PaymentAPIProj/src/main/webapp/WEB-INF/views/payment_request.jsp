@@ -53,7 +53,7 @@
 	    	//호출 성공 시 
 	    	success:function(resData) {
 	    		if(resData.response_code == "0000"){
-	    			$('#response').val("1111");
+	    			$('#response').val(resData.result);
 	    		}else{
 	    			alert(resData.response_msg);
 	    			return;
@@ -70,27 +70,27 @@
 	<table border=1>
         <tr>
             <td>카드번호</td>
-            <td><input type="number" value="" name="card_no" id="card_no" /></td>
+            <td><input type="text" value="" name="card_no" id="card_no" /></td>
         </tr>
         <tr>
             <td>유효기간</td>
-            <td><input type="number" value="" name="exp_dt" id="exp_dt" /></td>
+            <td><input type="text" value="" name="exp_dt" id="exp_dt" /></td>
         </tr>
         <tr>
         	<td>cvc</td>
-        	<td><input type="number" value="" name="cvc" id="cvc" /></td>
+        	<td><input type="text" value="" name="cvc" id="cvc" /></td>
         </tr>
         <tr>
         	<td>할부개월수</td>
-        	<td><input type="number" value="" name="instm_month" id="instm_month" /></td>
+        	<td><input type="text" value="" name="instm_month" id="instm_month" /></td>
         </tr>
         <tr>
         	<td>결제금액</td>
-        	<td><input type="number" value="" name="trans_amt" id="trans_amt" /></td>
+        	<td><input type="text" value="" name="trans_amt" id="trans_amt" /></td>
         </tr>
         <tr>
         	<td>부가가치세</td>
-        	<td><input type="number" value="" name="val_add_tax" id="val_add_tax" /></td>
+        	<td><input type="text" value="" name="val_add_tax" id="val_add_tax" /></td>
         </tr>
 	</table>
 	<br/><br/>

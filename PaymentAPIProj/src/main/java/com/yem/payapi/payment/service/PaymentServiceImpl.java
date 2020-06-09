@@ -15,7 +15,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-/*******
+/**
  * 결제처리 Service
  * @author 은미
  *
@@ -55,19 +55,18 @@ public class PaymentServiceImpl implements PaymentService{
 		String response_code = ""; //응답코드 
 		String response_msg = ""; //응답메세지 
 		
-		/******* 관리번호 채번 *******/
-		String maxUniqueId ="000000000000000000200";
-		//= paymentDAO.selectMaxUniqueId();
+		/******* 관리번호 채번 *******/ //미해결과제
+		String maxUniqueId = paymentDAO.selectMaxUniqueId();
 		if(maxUniqueId.equals("")) {
 			uniqueId = "000000000000000000001"; //초기값 세팅 
 		}else {
 			uniqueId = String.format("%020d",Integer.parseInt(maxUniqueId) + 1);
-		} 
+		}
 		logger.info("관리번호 채번  ::::: "+uniqueId);
 		
 		/******* 카드정보 암호화 *******/ // 
 		AES256Util aes256Util = new AES256Util();
-		String encryptCardInfo = aes256Util.encrypt(String.format("%-20s", cardNo)+"|"+String.format("%-4s", expDt)+"|"+String.format("%-3s", cvc));
+		String encryptCardInfo = aes256Util.encrypt(cardNo+"|"+expDt+"|"+cvc);
 		logger.info("카드정보 암호화 데이터 ::::: "+encryptCardInfo);
 		
 		
@@ -97,8 +96,9 @@ public class PaymentServiceImpl implements PaymentService{
 		logger.info("카드사에 전송될  stringData ::::: " + stringData);
 		
 		/******* 공통 VO에 세팅  *******/
+		commonVO.setUniqueId(uniqueId); 
 		commonVO.setTransDv(transDv); 
-		commonVO.setCardNo(Integer.parseInt(cardNo));
+		commonVO.setCardNo(cardNo);
 		commonVO.setExpDt(Integer.parseInt(expDt));
 		commonVO.setCvc(Integer.parseInt(cvc));
 		commonVO.setInstmMonth(String.format("%02d", Integer.parseInt(instmMonth)));
@@ -156,7 +156,7 @@ public class PaymentServiceImpl implements PaymentService{
 		String uniqueId = ""; //관리번호
 		String transDv = "CANCEL"; //거래구분 
 		String orgUniqueId = requestMap.get("unique_id").toString(); //원거래관리번호  
-		String transAmt = requestMap.get("cancal_amt").toString(); //거래금액(취소금액)
+		String transAmt = requestMap.get("cancel_amt").toString(); //거래금액(취소금액)
 		String valAddTax = requestMap.get("val_add_tax").toString(); //부가가치세 
 		String stringData = ""; //string데이터
 		String regUsr = "YEOM"; //등록자
@@ -170,8 +170,7 @@ public class PaymentServiceImpl implements PaymentService{
 		paymentDAO.selectPayTransDtls(commonVO);
 
 		/*******관리번호 채번 *******/
-		String maxUniqueId ="000000000000000000200";
-		//= paymentDAO.selectMaxUniqueId();
+		String maxUniqueId = paymentDAO.selectMaxUniqueId();
 		if(maxUniqueId.equals("")) {
 			uniqueId = "000000000000000000001"; //초기값 세팅 
 		}else {
@@ -180,16 +179,16 @@ public class PaymentServiceImpl implements PaymentService{
 		logger.info("관리번호 채번  ::::: "+uniqueId);
 		
 		/******* 카드정보 암호화 *******/
-		String cardNo = Integer.toString(commonVO.getCardNo());
+		String cardNo = commonVO.getCardNo();
 		String expDt = Integer.toString(commonVO.getExpDt());
 		String cvc = Integer.toString(commonVO.getCvc());
 		AES256Util aes256Util = new AES256Util();
-		String encryptCardInfo = aes256Util.encrypt(String.format("%-20s", cardNo)+"|"+String.format("%-4s", expDt)+"|"+String.format("%-3s", cvc));
+		String encryptCardInfo = aes256Util.encrypt(cardNo+"|"+expDt+"|"+cvc);
 		logger.info("카드정보 암호화 데이터 ::::: "+encryptCardInfo);
 		
 		
-		/******* 부가가치세 계산 *******/
-		if(valAddTax.equals("")) {  //값을 받지 않은 경우, 결제데이터의 부가가치세로 세팅  
+		/******* 부가가치세 계산 *******///미해결
+		if(valAddTax.equals("")) {  //값을 받지 않은 경우 자동계산
 			int iValAddTax = (int) Math.round(Double.parseDouble(transAmt)/11); //소수점이하 반올림 
 			valAddTax = Integer.toString(iValAddTax); 
 			logger.info("부가가치세 계산 ::::: "+valAddTax);
@@ -222,7 +221,9 @@ public class PaymentServiceImpl implements PaymentService{
 		commonVO.setOrgUniqueId(orgUniqueId);
 		commonVO.setStringData(stringData);
 		commonVO.setRegUsr(regUsr);
-		
+		//금액 계산 
+		commonVO.setPayAmt(commonVO.getPayAmt()-Integer.parseInt(transAmt));
+		commonVO.setPayValAddTax(commonVO.getPayValAddTax()-Integer.parseInt(valAddTax));
 		
 		/******* 데이터 제약 체크 *******/
 		chkData(commonVO);
@@ -231,10 +232,6 @@ public class PaymentServiceImpl implements PaymentService{
 		
 		
 		if(response_code.equals("0000")) {
-			
-			//금액 계산 
-			commonVO.setPayAmt(commonVO.getPayAmt()-Integer.parseInt(transAmt));
-			//commonVO.setPayValAddTax(pay_val_add_tax);
 			
 			/******* 거래기본 테이블 insert *******/
 			paymentDAO.insertPayTransBase(commonVO);
@@ -298,11 +295,11 @@ public class PaymentServiceImpl implements PaymentService{
 		if(response_code.equals("0000")) {
 			
 			/******* string데이터 조회  *******/
-			//commonVO = paymentDAO.selectPayTransBase(commonVO);
-			stringData = " 446PAYMENT   000000000000000002015555555555          0555  5        55550000000505                    mC0tRrujsgxZ5fKMAs39G450mxaUk1b32R6nHbSWvYM=                                                                                                                                                                                                                                                                                                               \r\n" + 
-					""; 
-					//commonVO.getStringData();
+			commonVO = paymentDAO.selectPayTransBase(commonVO);
+			stringData = commonVO.getStringData();
+					//" 446PAYMENT   000000000000000002015555555555          0555  5        55550000000505                    mC0tRrujsgxZ5fKMAs39G450mxaUk1b32R6nHbSWvYM=                                                                                                                                                                                                                                                                                                               "; 
 			logger.info("카드사에 전송될 stringData :::::" + stringData);
+			
 			
 			/******* String 데이터  응답값으로 조립  *******/
 			uniqueId = stringData.substring(14, 34); //관리번호
@@ -383,7 +380,8 @@ public class PaymentServiceImpl implements PaymentService{
 			}
 		}else {
 			//카드번호 자리수 체크 
-			if(10 > (int)(Math.log10(commonVO.getCardNo())+1) || 20 < (int)(Math.log10(commonVO.getCardNo())+1)) {
+			//if(10 > (int)(Math.log10(commonVO.getCardNo())+1) || 20 < (int)(Math.log10(commonVO.getCardNo())+1)) {
+			if(10 > commonVO.getCardNo().length() || 20 < commonVO.getCardNo().length()) {
 				code = "0001";
 				msg = "카드번호는 최소10자리, 최대20자리여야 합니다.";
 			}

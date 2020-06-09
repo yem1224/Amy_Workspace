@@ -52,7 +52,6 @@ public class PaymentDAO {
     	logger.info("****** PaymentDAO.insertPayTransBase ******");
     	PaymentMapper mapper = sqlSession.getMapper(PaymentMapper.class);
     	mapper.insertPayTransBase(commonVO);
-    	logger.info("디비연결 성공 ???????????????? ");
     }
     
     /**
@@ -63,24 +62,6 @@ public class PaymentDAO {
 	public String selectMaxUniqueId() throws Exception {
 		// TODO Auto-generated method stub
 		logger.info("****** PaymentDAO.selectMaxUniqueId ******");
-		Connection conn = null;
-		Statement state = null; 
-		logger.info("000001****** PaymentDAO.selectMaxUniqueId ******");
-		Class.forName(driver);
-		conn = DriverManager.getConnection(url, username, password);
-		logger.info("11111****** PaymentDAO.selectMaxUniqueId ******");
-		state = conn.createStatement();
-		logger.info("2222****** PaymentDAO.selectMaxUniqueId ******");
-		
-		String sql;
-		sql = "select * from dual";
-		ResultSet rs = state.executeQuery(sql);
-		logger.info("3333***** PaymentDAO.selectMaxUniqueId ******");
-		rs.close();
-		state.close();
-		conn.close();
-		logger.info("444****** PaymentDAO.selectMaxUniqueId ******");
-		
     	PaymentMapper mapper = sqlSession.getMapper(PaymentMapper.class);
 		return mapper.selectMaxUniqueId();
 	}

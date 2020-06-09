@@ -59,7 +59,7 @@
     </insert>
     
     <!-- 관리번호 최대값 조회 -->
-    <select id="selectMaxUniqueId" parameterType="com.yem.payapi.common.vo.CommonVO" resultType="com.yem.payapi.common.vo.CommonVO">
+    <select id="selectMaxUniqueId" resultType="java.lang.String">
         select max(unique_id)
           from pay_trans_base
     </select>
