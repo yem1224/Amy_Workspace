@@ -66,22 +66,29 @@
     
      <!-- 결제거래상세 테이블 select -->
     <select id="selectPayTransDtls" parameterType="com.yem.payapi.common.vo.CommonVO"  resultType="com.yem.payapi.common.vo.CommonVO">
-        select trans_seq
-              , success_yn
-              , trans_dv
-              , unique_id
-              , org_unique_id
-              , status
-              , trans_amt
-              , val_add_tax
-              , pay_amt
-              , pay_val_add_tax
-              , ctt
-              , reg_dtm
-              , reg_usr 
-        from pay_trans_base
-        where
-            unique_id = #{unique_id}
+        select dtls.trans_seq
+              , dtls.success_yn
+              , dtls.trans_dv
+              , dtls.unique_id
+              , dtls.org_unique_id
+              , ( case dtls.status
+                  when '0' then '결제'
+                  when '1' then '부분취소'
+                  when '2' then '전체취소'
+                  end )as status
+              , dtls.trans_amt
+              , dtls.val_add_tax
+              , dtls.pay_amt
+              , dtls.pay_val_add_tax
+              , dtls.ctt
+              , dtls.reg_dtm
+              , dtls.reg_usr 
+              , base.card_no
+              , base.exp_dt
+              , base.cvc
+        from pay_trans_base base, pay_trans_dtls dtls
+        where base.unique_id = dtls.unique_id
+          and dtls.unique_id = #{unique_id}
     </select>
     
     <!-- 결제거래상세 테이블 insert-->
@@ -115,6 +122,30 @@
               ,  #{reg_usr}
             )  
     </insert>
+    
+    <!-- 결제거래상세 테이블 update-->
+    <update id="updatePayTransDtls">
+        update pay_trans_dtls
+          set pay_amt = #{pay_amt}
+           , pay_val_add_tax = #{pay_val_add_tax}              
+           , ctt = ( case status
+                  when '0' then '결제'
+                  when '1' then '부분취소'
+                  when '2' then '전체취소'
+                  end ) || ' 상태' 
+           , reg_dtm = now()
+           , reg_usr = 'YEOM_1'
+        where trans_seq = #{trans_seq}
+          and unique_id =  #{org_unique_id}
+    </update>
+    
+     <!-- 취소거래 체크를 위한 원거래정보 select -->
+    <select id="selectOrgValAddTax" parameterType="java.lang.String"  resultType="java.lang.String">
+        select sum(val_add_tax)
+        from pay_trans_base 
+        where org_unique_id  = #{org_unique_id}
+         and trans_dv = 'CANCEL'
+    </select>
     
 </mapper>
  

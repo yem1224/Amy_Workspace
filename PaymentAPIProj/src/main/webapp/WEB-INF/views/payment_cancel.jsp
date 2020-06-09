@@ -45,7 +45,8 @@
 	    	dataType : "json",
 	    	data : JSON.stringify({ unique_id : $('#unique_id').val() //관리번호 
 	    		                  , cancel_amt : $('#cancel_amt').val() //취소금액
-	    		                  , val_add_tax : $('#val_add_tax').val() //부가가치세 
+	    		                  , val_add_tax : $('#val_add_tax').val() //부가가치세
+	    		                  , ctt : $('#ctt').val() //취소사유 
 	    		                 }),
 	    	contentType : "application/json; charset=UTF-8",
 	    	
@@ -54,7 +55,7 @@
 	    		if(resData.response_code == "0000"){
 	    			$('#response').val(resData.result);
 	    		}else{
-	    			alert(resData.response_msg);
+	    			alert("[에러코드: "+resData.response_code+"]"+resData.response_msg);
 	    			return;
 	    		}
 	    	}
@@ -73,16 +74,20 @@
         </tr>
         <tr>
         	<td>취소금액</td>
-        	<td><input type="number" value="" name="cancel_amt" id="cancel_amt" /></td>
+        	<td><input type="text" value="" name="cancel_amt" id="cancel_amt" /></td>
         </tr>
         <tr>
         	<td>부가가치세</td>
-        	<td><input type="number" value="" name="val_add_tax" id="val_add_tax" /></td>
+        	<td><input type="text" value="" name="val_add_tax" id="val_add_tax" /></td>
+        </tr>
+        <tr>
+        	<td>취소사유</td>
+        	<td><input type="text" value="" name="ctt" id="ctt" /></td>
         </tr>
 	</table>
 	<br/><br/>
 	<input type="button" value="취소요청" onclick="fn_request();">
-	<input type="button" value="메인화면가기" onclick="fn_main();">
+	<input type="button" value="메인화면가기" onclick="location.href='../main.do'">
 	<br/><br/>
 	<textarea id="response" rows="10" cols="40" readonly>결과가 표시됩니다.</textarea>
 </body>

@@ -55,7 +55,7 @@
 	    		if(resData.response_code == "0000"){
 	    			$('#response').val(resData.result);
 	    		}else{
-	    			alert(resData.response_msg);
+	    			alert("[에러코드: "+resData.response_code+"]"+resData.response_msg);
 	    			return;
 	    		}
 	    	}

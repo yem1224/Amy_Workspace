@@ -41,7 +41,7 @@
 	    		if(resData.response_code == "0000"){
 	    			$('#response').val(resData.result);
 	    		}else{
-	    			alert(resData.response_msg);
+	    			alert("[에러코드: "+resData.response_code+"]"+resData.response_msg);
 	    			return;
 	    		}
 	    	}
@@ -51,7 +51,7 @@
   
   
 </script>
-<title>결제취소 요청 화면</title>
+<title>데이터조회 화면</title>
 </head>
 <body>
 	<table border=1>

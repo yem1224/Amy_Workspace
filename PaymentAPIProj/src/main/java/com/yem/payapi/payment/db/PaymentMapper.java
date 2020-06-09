@@ -47,6 +47,20 @@ public interface PaymentMapper {
 	 */
 	public void insertPayTransDtls(CommonVO commonVO) throws Exception;
 
+	/**
+	 * 원거래내역 상태 update
+	 * @param commonVO
+	 * @throws Exception
+	 */
+	public void updatePayTransDtls(CommonVO commonVO) throws Exception;
+
+	/**
+	 * 원거래의 취소거래 부가가치세합 
+	 * @param orgUniqueId
+	 * @throws Exception
+	 */
+	public String selectOrgValAddTax(String orgUniqueId) throws Exception;
+
 
 }
  
