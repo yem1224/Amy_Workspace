@@ -101,7 +101,7 @@ Spring Framework (Maven)
 4) tomcat 설치>이클립스 Server 탭에 tomcat 서버 추가
 5) Server에 오른쪽 마우스클릭> Add and Remove> 'PaymentAPIProj' 프로젝트 선택 > Server Start!!!
 6) [http://localhost:8080/payapi/main.do] 해당 url 실행
-7) 메인화면이 뜨면 테스트하고자하는 버튼을 클릭
+7) 메인화면이 뜨면 테스트하고자하는 API버튼을 클릭
 
 ----실행 
 1) 결제 API 
@@ -124,6 +124,5 @@ Spring Framework (Maven)
   > 응답 결과를 확인 ( consol에 요청 처리과정 확인: 복호화,String데이터 json포맷에 맞춰 조립과정) 
 
  4) API요청 실패시 
-
-
+  > 각 API마다 오류코드 및 오류메세지 구현 
 
