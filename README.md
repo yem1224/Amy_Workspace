@@ -1,5 +1,4 @@
 # Amy_Workspace
-
 **************************************
 ** 1. 개발 프레임워크 
 **************************************
@@ -17,11 +16,11 @@ Spring Framework (Maven)
   - 관리번호       | unique_id (PK)| varchar(20)  | 거래고유번호
   - 거래구분       | trans_dv      | varchar(10)  | 기능 구분값, 승인(PAYMENT),취소(CANCEL) 
   - 카드번호       | card_no       | varchar(20)  | 카드번호
-  - 할부개월수     | instm_month   | int(2)       | 일시불, 2~12개월, 취소시에는 일시불 00로 저장
-  - 유효기간       | exp_dt        | int(4)       |
-  - cvc            | cvc           | int(3)       |     
-  - 거래금액       | trans_amt     | int(10)      | 
-  - 부가가치세     | val_add_tax   | int(10)      |
+  - 할부개월수     | instm_month   | varchar(2)   | 일시불, 2~12개월, 취소시에는 일시불 00로 저장
+  - 유효기간       | exp_dt        | varchar(4)   |
+  - cvc            | cvc           | varchar(3)   |     
+  - 거래금액       | trans_amt     | varchar(10)  | 
+  - 부가가치세     | val_add_tax   | varchar(10)  |
   - 원거래관리번호 | org_unique_id | varchar(20)  |
   - string데이터   | string_data   | varchar(500) | 카드사로 전송하는 데이터 
   - 내용           | ctt           | varchar(50)  |
@@ -43,10 +42,10 @@ Spring Framework (Maven)
   - 관리번호              | unique_id (PK)  | varchar(20)  | 거래고유번호
   - 원거래관리번호        | org_unique_id   | varchar(20)  |
   - 결재상태              | status          | varchar(1)   | 결제(0), 부분취소(1), 전체취소(2) 
-  - 거래금액              | trans_amt       | int(10)      | 
-  - 부가가치세            | val_add_tax     | int(10)      |
-  - 결재상태인 금액       | pay_amt         | int(10)      | 결재상태로 남겨진 금액으로 원거래의 결재상태금액은 계속 update됨. 
-  - 결재상태인 부가가치세 | pay_val_add_tax | int(10)      | 결재상태로 남겨진 금액으로 원거래의 부가가치세는 계속 update됨.
+  - 거래금액              | trans_amt       | varchar(10)  | 
+  - 부가가치세            | val_add_tax     | varchar(10)  |
+  - 결재상태인 금액       | pay_amt         | varchar(10)  | 결재상태로 남겨진 금액으로 원거래의 결재상태금액은 계속 update됨. 
+  - 결재상태인 부가가치세 | pay_val_add_tax | varchar(10)  | 결재상태로 남겨진 금액으로 원거래의 부가가치세는 계속 update됨.
   - 내용                  | ctt             | varchar(50)  | 취소사유 등 입력 
   - 등록일시              | reg_dtm         | datetime     |
   - 등록자                | reg_usr         | varchar(10)  | 
@@ -116,6 +115,7 @@ Spring Framework (Maven)
   > 원거래 관리번호 및 취소금액 입력, 부가가치세는 옵션값임
   > '취소요청'버튼 클릭
   > 응답 결과를 확인 ( consol에 요청 처리과정 확인: 암호화,금액 체크) 
+  > 부분취소 시 원거래 결제관리번호를 입력해주세요. (취소거래 관리번호 X)
  
  3) 데이터 조회 API 
   > 메인화면에서 '데이터 조회' 버튼을 클릭 
