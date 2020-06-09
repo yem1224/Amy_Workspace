@@ -448,7 +448,7 @@ public class PaymentServiceImpl implements PaymentService{
 					msg = "CVC는 3자리로 입력해주세요.";
 				}
 				//할수개월수 체크 
-				else if(0 > Integer.parseInt(chkInstmMonth)|| 12 < Integer.parseInt(chkInstmMonth)&& 1==Integer.parseInt(chkInstmMonth)) {
+				else if(0 > Integer.parseInt(chkInstmMonth)|| 12 < Integer.parseInt(chkInstmMonth) || 1==Integer.parseInt(chkInstmMonth)) {
 					code = "0012";
 					msg = "할부개월수는 2~12 로 입력해주세요.";
 				}
