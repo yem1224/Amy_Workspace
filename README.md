@@ -37,9 +37,9 @@ Spring Framework (Maven)
   ( 컬럼명                | 컬럼영문명      | 도메인       | 설명                                  )
   ==================================================================================================
   - 거래일련번호          | trans_seq (PK)  | int(20)      | 거래일련번호 
+  - 관리번호              | unique_id (FK)  | varchar(20)  | 결제거래 기본 테이블의 PK를 참조한다. 삭제시 함께 삭제  
   - 거래성공여부          | success_yn      | varchar(1)   |
   - 거래구분              | trans_dv        | varchar(10)  | 기능 구분값, 승인(PAYMENT),취소(CANCEL) 
-  - 관리번호              | unique_id (PK)  | varchar(20)  | 거래고유번호
   - 원거래관리번호        | org_unique_id   | varchar(20)  |
   - 결재상태              | status          | varchar(1)   | 결제(0), 부분취소(1), 전체취소(2) 
   - 거래금액              | trans_amt       | varchar(10)  | 
@@ -96,12 +96,15 @@ Spring Framework (Maven)
 
 ---- 빌드
 1) DB연동을 위한 mysql설치 필요
+   - github repository에 TABLE_CREATE.sql 파일의 테이블 생성 
 2) eclipse 설치 후 프로젝트를 지정된 workspace에 복사
 3) eclipse 실행 후 import>Existing Project into Workspace 프로젝트'PaymentAPIProj'선택
 4) tomcat 설치>이클립스 Server 탭에 tomcat 서버 추가
 5) Server에 오른쪽 마우스클릭> Add and Remove> 'PaymentAPIProj' 프로젝트 선택 > Server Start!!!
 6) [http://localhost:8080/payapi/main.do] 해당 url 실행
 7) 메인화면이 뜨면 테스트하고자하는 API버튼을 클릭
+
+
 
 ----실행 
 1) 결제 API 
@@ -125,4 +128,5 @@ Spring Framework (Maven)
 
  4) API요청 실패시 
   > 각 API마다 오류코드 및 오류메세지 구현 
+
 
