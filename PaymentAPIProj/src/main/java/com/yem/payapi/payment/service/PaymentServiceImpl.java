@@ -153,15 +153,7 @@ public class PaymentServiceImpl implements PaymentService{
 		CommonVO commonVO = new CommonVO(); 
 		
 		/******* REQUEST VALUES *******/
-		String uniqueId = ""; //관리번호
-		String transDv = "CANCEL"; //거래구분 
 		String orgUniqueId = requestMap.get("unique_id").toString(); //원거래관리번호  
-		String transAmt = requestMap.get("cancel_amt").toString(); //거래금액(취소금액)
-		String valAddTax = requestMap.get("val_add_tax").toString(); //부가가치세 
-		String ctt = requestMap.get("ctt").toString(); //취소사유 
-		
-		String stringData = ""; //string데이터
-		String regUsr = "YEOM"; //등록자
 		
 		/******* RESPONSE VALUES *******/
 		String response_code = ""; //응답코드 
@@ -188,6 +180,12 @@ public class PaymentServiceImpl implements PaymentService{
 		}
 		
 		/******* REQUEST VALUES값 세팅  *******/ 
+		String transDv = "CANCEL";
+		String transAmt = requestMap.get("cancel_amt").toString(); //거래금액(취소금액)
+		String valAddTax = requestMap.get("val_add_tax").toString(); //부가가치세 
+		String ctt = requestMap.get("ctt").toString(); //취소사유 
+		String regUsr = "YEOM"; //등록자
+		
 		commonVO.setTransDv(transDv); 
 		commonVO.setTransAmt(transAmt);
 		commonVO.setValAddTax(valAddTax);
@@ -205,7 +203,7 @@ public class PaymentServiceImpl implements PaymentService{
 		
 		if(response_code.equals("0000")) {
 			/*******관리번호 채번 *******/
-			uniqueId = makeUniqueId();
+			String uniqueId = makeUniqueId();
 			
 			/******* 카드정보 암호화 *******/
 			String cardNo = commonVO.getCardNo();
@@ -217,7 +215,7 @@ public class PaymentServiceImpl implements PaymentService{
 			
 			
 			/******* string데이터 생성 *******/ 
-			stringData 
+			String stringData
 			= String.format("%-10s", transDv) //데이터구분 
 			+ uniqueId //관리번호
 			+ String.format("%-20s", cardNo) //카드번호 (원데이터와 동일)
@@ -419,10 +417,9 @@ public class PaymentServiceImpl implements PaymentService{
 		String chkPayValAddTax= commonVO.getPayValAddTax(); //결제상태인 부가가치세
 		String chkOrgValAddTax= commonVO.getOrgValAddTax(); //원거래 부가가치세
 		String chkCtt= commonVO.getCtt(); //내용
-		logger.info(chkTransAmt+"****** 2222222222222******"+chkPayAmt);
-		
-		//데이터 조회 또는 취소 시 관리번호 체크
-		if(chkTransDv.equals("") || chkTransDv.equals("CANCEL")) {
+
+		//데이터 조회  시 관리번호 체크
+		if(chkTransDv.equals("")) {
 			if(chkUniqueId.equals("")) {
 				code = "0009";
 				msg = "관리번호를 입력해주세요.";
@@ -471,14 +468,21 @@ public class PaymentServiceImpl implements PaymentService{
 			}
 			//취소 거래의 경우 
 			else if(chkTransDv.equals("CANCEL")){
+				if(chkUniqueId.equals("")) {
+					code = "0009";
+					msg = "관리번호를 입력해주세요.";
+				}
+				else if(chkUniqueId.length() != 20) {
+					code = "0010";
+					msg = "유효하지않은 관리번호 입니다.";
+				}
 				//결제상태인 금액있는지 체크 
-				if(Long.parseLong(chkPayAmt) == 0) {
+				else if(Long.parseLong(chkPayAmt) == 0) {
 					code = "0011";
 					msg = "결제 금액이 없습니다.";
 				}
 				//거래금액 체크  
 				else if( Long.parseLong(chkTransAmt) > Long.parseLong(chkPayAmt) ) {
-					logger.info("****** 2222222222222******");
 					code = "0004";
 					msg = "결제 금액보다 작아야합니다.\n[결제상태인 금액: "+chkPayAmt+"]";
 				}
@@ -494,7 +498,11 @@ public class PaymentServiceImpl implements PaymentService{
 				//전체 취소의 경우, 원거래 금액의 부가가치세와 총 취소금액의 부가가치세의 합과 같아야함.
 				else if(Long.parseLong(chkPayAmt)- Long.parseLong(chkTransAmt) == 0) { 
 					String valAddTaxSum = paymentDAO.selectOrgValAddTax(chkOrgUniqueId);
-					if(Long.parseLong(valAddTaxSum) != Long.parseLong(chkOrgValAddTax)) {
+					logger.info("(Long.parseLong(valAddTaxSum))"+Long.parseLong(valAddTaxSum));
+					logger.info("Long.parseLong(chkTransAmt))"+Long.parseLong(chkTransAmt));
+					
+					logger.info("Long.parseLong(chkOrgValAddTax)"+Long.parseLong(chkOrgValAddTax));
+					if((Long.parseLong(valAddTaxSum)+Long.parseLong(chkTransAmt)) != Long.parseLong(chkOrgValAddTax)) {
 						code = "0014";
 						msg = "취소의 경우, 원 거래 금액의 부가가치세와 총 취소금액의 부가가치세의 합과 같아야 합니다.";
 					}
