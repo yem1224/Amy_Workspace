@@ -15,7 +15,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+ 
 /**
  * 결제처리 Service
  * @author 은미
@@ -82,7 +82,7 @@ public class PaymentServiceImpl implements PaymentService{
 			logger.info("카드정보 암호화 데이터 ::::: "+encryptCardInfo);
 			
 			/******* 부가가치세 계산 *******/
-			valAddTax = calValAddTax(transAmt, valAddTax);
+			valAddTax = calValAddTax(transAmt, valAddTax,"0","0");
 			
 			/******* string데이터 생성 *******/ 
 			stringData 
@@ -104,6 +104,7 @@ public class PaymentServiceImpl implements PaymentService{
 			
 			/******* 공통 VO 세팅  *******/
 			commonVO.setUniqueId(uniqueId);
+			commonVO.setValAddTax(valAddTax);
 			commonVO.setPayAmt(transAmt);
 			commonVO.setPayValAddTax(valAddTax);
 			commonVO.setOrgUniqueId("");
@@ -168,8 +169,10 @@ public class PaymentServiceImpl implements PaymentService{
 			logger.info("원거래정보 조회 [카드번호  ::::: "+commonVO.getCardNo()+" ]");
 			logger.info("원거래정보 조회 [유효기간  ::::: "+commonVO.getExpDt()+" ]");
 			logger.info("원거래정보 조회 [cvc  ::::: "+commonVO.getCvc()+" ]");
-			logger.info("원거래정보 조회 [결제 상태::::: "+commonVO.getStatus()+" ]");
-			logger.info("원거래정보 조회 [부가가치세::::: "+commonVO.getValAddTax()+" ]");
+			logger.info("원거래정보 조회 [결제 상태  ::::: "+commonVO.getStatus()+" ]");
+			logger.info("원거래정보 조회 [부가가치세 ::::: "+commonVO.getValAddTax()+" ]");
+			logger.info("원거래정보 조회 [결제상태의 금액 ::::: "+commonVO.getPayAmt()+" ]");
+			logger.info("원거래정보 조회 [결제상태의 부가가치세::: "+commonVO.getPayValAddTax()+" ]");
 			commonVO.setOrgValAddTax(commonVO.getValAddTax()); //취소 시 부가가치세 체크를 위함 
 		}
 		catch (Exception e) {
@@ -185,16 +188,16 @@ public class PaymentServiceImpl implements PaymentService{
 		String valAddTax = requestMap.get("val_add_tax").toString(); //부가가치세 
 		String ctt = requestMap.get("ctt").toString(); //취소사유 
 		String regUsr = "YEOM"; //등록자
-		
+
 		commonVO.setTransDv(transDv); 
 		commonVO.setTransAmt(transAmt);
-		commonVO.setValAddTax(valAddTax);
 		commonVO.setCtt(ctt);
 		commonVO.setOrgUniqueId(orgUniqueId);
 		commonVO.setRegUsr(regUsr);
 		
 		/******* 부가가치세 계산 *******/
-		valAddTax = calValAddTax(transAmt, valAddTax);
+		valAddTax = calValAddTax(transAmt, valAddTax,commonVO.getPayAmt(),commonVO.getPayValAddTax());
+		commonVO.setValAddTax(valAddTax);
 
 		/******* 데이터 제약 체크 *******/
 		chkData(commonVO);
@@ -247,24 +250,17 @@ public class PaymentServiceImpl implements PaymentService{
 			commonVO.setPayAmt(Long.toString(payAmt));
 			commonVO.setPayValAddTax(Long.toString(payValAddTax));
 			if(payAmt == 0) { //모두 취소했을 경우 
-				commonVO.setStatus("2"); 
+				commonVO.setStatus("2");
 			}else { //부분 취소의 경우 
 				commonVO.setStatus("1");
 			}
-
-			try {
-				/******* 거래기본 테이블 insert *******/
-				paymentDAO.insertPayTransBase(commonVO);
-				/******* 거래내역 테이블 insert *******/
-				paymentDAO.insertPayTransDtls(commonVO);
-				/******* 원거래내역 상태 update *******/
-				paymentDAO.updatePayTransDtls(commonVO);
-			}catch(RuntimeException e) {
-				/******* 응답결과 세팅 *******/ 
-				resultMap.put("response_code","88888");
-				resultMap.put("response_msg",e.getMessage());
-				return resultMap;
-			}
+			
+			/******* 거래기본 테이블 insert *******/
+			paymentDAO.insertPayTransBase(commonVO);
+			/******* 거래내역 테이블 insert *******/
+			paymentDAO.insertPayTransDtls(commonVO);
+			/******* 원거래내역 상태 update *******/
+			paymentDAO.updatePayTransDtls(commonVO);
 			
 			/******* json format으로 출력  *******/
 			JSONArray arr = new JSONArray();
@@ -291,7 +287,7 @@ public class PaymentServiceImpl implements PaymentService{
 	 * StringData 조회 
 	 */
 	@Override
-	@Transactional
+	@Transactional(rollbackFor=Exception.class)
 	public HashMap<String, Object> doDataSearch(HashMap<String, Object> requestMap) throws Exception {
 		// TODO Auto-generated method stub
 		logger.info("****** PaymentServiceImpl.doDataSearch ******");
@@ -398,6 +394,7 @@ public class PaymentServiceImpl implements PaymentService{
 	 * @return
 	 * @throws Exception
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public void chkData(CommonVO commonVO) throws Exception {
 		logger.info("****** PaymentServiceImpl.chkData ******");
 		String code = "0000";
@@ -441,13 +438,17 @@ public class PaymentServiceImpl implements PaymentService{
 					code = "0006";
 					msg = "유효기간은 월(2자리),년도(2자리)로 입력해주세요.";
 				}
+				else if(Integer.parseInt(chkExpDt.substring(0, 2)) > 12 || Integer.parseInt(chkExpDt.substring(0, 2)) < 1 ) {
+					code = "0016";
+					msg = "유효기간 월은 01~12로 입력해주세요.";
+				}
 				//cvc체크
 				else if(chkCvc.length() > 3) {
 					code = "0013";
 					msg = "CVC는 3자리로 입력해주세요.";
 				}
 				//할수개월수 체크 
-				else if(0 > Integer.parseInt(chkInstmMonth)|| 12 < Integer.parseInt(chkInstmMonth)) {
+				else if(0 > Integer.parseInt(chkInstmMonth)|| 12 < Integer.parseInt(chkInstmMonth)&& 1==Integer.parseInt(chkInstmMonth)) {
 					code = "0012";
 					msg = "할부개월수는 2~12 로 입력해주세요.";
 				}
@@ -498,11 +499,7 @@ public class PaymentServiceImpl implements PaymentService{
 				//전체 취소의 경우, 원거래 금액의 부가가치세와 총 취소금액의 부가가치세의 합과 같아야함.
 				else if(Long.parseLong(chkPayAmt)- Long.parseLong(chkTransAmt) == 0) { 
 					String valAddTaxSum = paymentDAO.selectOrgValAddTax(chkOrgUniqueId);
-					logger.info("(Long.parseLong(valAddTaxSum))"+Long.parseLong(valAddTaxSum));
-					logger.info("Long.parseLong(chkTransAmt))"+Long.parseLong(chkTransAmt));
-					
-					logger.info("Long.parseLong(chkOrgValAddTax)"+Long.parseLong(chkOrgValAddTax));
-					if((Long.parseLong(valAddTaxSum)+Long.parseLong(chkTransAmt)) != Long.parseLong(chkOrgValAddTax)) {
+					if((Double.parseDouble(valAddTaxSum)+Double.parseDouble(chkValAddTax)) != Double.parseDouble(chkOrgValAddTax)) {
 						code = "0014";
 						msg = "취소의 경우, 원 거래 금액의 부가가치세와 총 취소금액의 부가가치세의 합과 같아야 합니다.";
 					}
@@ -524,11 +521,12 @@ public class PaymentServiceImpl implements PaymentService{
 	 * @return
 	 * @throws Exception
 	 */
+	@Transactional(rollbackFor=Exception.class)
 	public String makeUniqueId() throws Exception {
 		String id = "";
 		String maxUniqueId = paymentDAO.selectMaxUniqueId();
-		if(maxUniqueId.equals("")) {
-			id  = "000000000000000000001"; //초기값 세팅 
+		if(maxUniqueId.equals("00000000000000000000")) {
+			id  = "00000000000000000001"; //초기값 세팅 
 		}else {
 			id  = String.format("%020d",Long.parseLong(maxUniqueId) + 1);
 		} 
@@ -541,12 +539,17 @@ public class PaymentServiceImpl implements PaymentService{
 	 * @return
 	 * @throws Exception
 	 */
-	public String calValAddTax(String amt, String valAddTax) throws Exception {
+	@Transactional(rollbackFor=Exception.class)
+	public String calValAddTax(String amt, String valAddTax,String payAmt, String payValAddTax) throws Exception {
 		String tax = "";
 		//값을 받지 않은 경우, 자동계산 
 		if(valAddTax.equals("")) {  
-			int iValAddTax = (int) Math.round(Double.parseDouble(amt)/11); //소수점이하 반올림 
-			tax = Integer.toString(iValAddTax); 
+			if(Long.parseLong(payAmt) == Long.parseLong(amt)) { //전체취소의 경우 
+				tax = payValAddTax; //부가가치세를 남아있는 금액으로 세팅 
+			}else {
+				int iValAddTax = (int) Math.round(Double.parseDouble(amt)/11); //소수점이하 반올림 
+				tax = Integer.toString(iValAddTax);
+			}
 		}else {
 			tax = valAddTax; 
 		}

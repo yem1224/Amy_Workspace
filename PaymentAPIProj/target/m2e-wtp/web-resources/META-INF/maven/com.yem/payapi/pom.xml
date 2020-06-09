@@ -116,6 +116,19 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>   
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-all</artifactId>
+		    <version>1.9.5</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-test</artifactId>
+		    <version>${org.springframework-version}</version>
+		    <scope>test</scope>
+		</dependency>
+
 
 		<!-- JSON 포맷을 위한 -->
 		<dependency>
@@ -152,7 +165,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>3.1.1.RELEASE</version>
+            <version>${org.springframework-version}</version>
         </dependency>
         
         <!-- mysql to java connector -->
@@ -227,6 +240,7 @@
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <skipTest>true</skipTest>
                 </configuration>
             </plugin>
             <plugin>

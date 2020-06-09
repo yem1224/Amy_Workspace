@@ -60,7 +60,7 @@
     
     <!-- 관리번호 최대값 조회 -->
     <select id="selectMaxUniqueId" resultType="java.lang.String">
-        select max(unique_id)
+        select COALESCE(max(unique_id),'00000000000000000000')
           from pay_trans_base
     </select>
     
@@ -128,11 +128,11 @@
         update pay_trans_dtls
           set pay_amt = #{pay_amt}
            , pay_val_add_tax = #{pay_val_add_tax}              
-           , ctt = ( case status
-                  when '0' then '결제'
-                  when '1' then '부분취소'
-                  when '2' then '전체취소'
-                  end ) || ' 상태' 
+           , ctt = ( case #{status}
+                  when '0' then '결제 상태'
+                  when '1' then '부분취소  상태'
+                  when '2' then '전체취소  상태'
+                  end )
            , reg_dtm = now()
            , reg_usr = 'YEOM_1'
         where trans_seq = #{trans_seq}
@@ -141,7 +141,7 @@
     
      <!-- 취소거래 체크를 위한 원거래정보 select -->
     <select id="selectOrgValAddTax" parameterType="java.lang.String"  resultType="java.lang.String">
-        select sum(val_add_tax)
+        select truncate(sum(val_add_tax),0)
         from pay_trans_base 
         where org_unique_id  = #{org_unique_id}
          and trans_dv = 'CANCEL'

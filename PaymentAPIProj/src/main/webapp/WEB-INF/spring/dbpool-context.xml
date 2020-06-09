@@ -24,6 +24,19 @@
 		        </list>
 		    </property>
 		</bean>
+		<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSourceMySQL" />
+		</bean>
+
+		<bean id="dataSourceMySQL" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+			<constructor-arg ref="dataSource" />
+			<property name="logFormatter">
+				<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+					<property name="loggingType" value="MULTI_LINE" />
+					<property name="sqlPrefix" value="" />
+				</bean>
+			</property>
+		</bean>
 		 
 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		    <property name="driverClassName" value="${jdbc.driver}" />
