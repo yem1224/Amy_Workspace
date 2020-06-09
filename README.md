@@ -16,17 +16,17 @@ Spring Framework (Maven)
   ==========================================================================================
   - 관리번호       | unique_id (PK)| varchar(20)  | 거래고유번호
   - 거래구분       | trans_dv      | varchar(10)  | 기능 구분값, 승인(PAYMENT),취소(CANCEL) 
-  - 카드번호       | card_no       | int(20)      | 카드번호
+  - 카드번호       | card_no       | varchar(20)  | 카드번호
   - 할부개월수     | instm_month   | int(2)       | 일시불, 2~12개월, 취소시에는 일시불 00로 저장
   - 유효기간       | exp_dt        | int(4)       |
-  - cvc           | cvc           | int(3)       |     
+  - cvc            | cvc           | int(3)       |     
   - 거래금액       | trans_amt     | int(10)      | 
   - 부가가치세     | val_add_tax   | int(10)      |
   - 원거래관리번호 | org_unique_id | varchar(20)  |
-  - string데이터  | string_data   | varchar(500) | 카드사로 전송하는 데이터 
-  - 내용          | ctt           | varchar(50)  |
-  - 등록일시      | reg_dtm       | datetime     |
-  - 등록자        | reg_usr       | varchar(10)  | 
+  - string데이터   | string_data   | varchar(500) | 카드사로 전송하는 데이터 
+  - 내용           | ctt           | varchar(50)  |
+  - 등록일시       | reg_dtm       | datetime     |
+  - 등록자         | reg_usr       | varchar(10)  | 
   ===========================================================================================
   
 
@@ -45,9 +45,9 @@ Spring Framework (Maven)
   - 결재상태              | status          | varchar(1)   | 결제(0), 부분취소(1), 전체취소(2) 
   - 거래금액              | trans_amt       | int(10)      | 
   - 부가가치세            | val_add_tax     | int(10)      |
-  - 결재상태인 금액       | pay_amt         | int(10)      | 
-  - 결재상태인 부가가치세  | pay_val_add_tax | int(10)      |
-  - 내용                  | ctt             | varchar(50)  | 거래실패사유 등 입력 
+  - 결재상태인 금액       | pay_amt         | int(10)      | 결재상태로 남겨진 금액으로 원거래의 결재상태금액은 계속 update됨. 
+  - 결재상태인 부가가치세 | pay_val_add_tax | int(10)      | 결재상태로 남겨진 금액으로 원거래의 부가가치세는 계속 update됨.
+  - 내용                  | ctt             | varchar(50)  | 취소사유 등 입력 
   - 등록일시              | reg_dtm         | datetime     |
   - 등록자                | reg_usr         | varchar(10)  | 
   ==================================================================================================
@@ -56,6 +56,38 @@ Spring Framework (Maven)
 **************************************
 ** 3. 문제해결 전략
 **************************************
+1) 문제 이해 및 프로세스 파악 
+ - 프로그램의 목적과 제약조건 이해 
+ - 이해한 내용을 바탕으로 프로세스를 파악(거래 흐름도 작성) 
+
+2) 시스템 개발 일정 수립 및 to-do list 작성 
+ - 1일차: 문제 이해, 일정수립, 프로세스 파악, 테이블 설계 
+ - 2일차: 프로그램설계, 설계검증, 테이블 생성, 구현 
+ - 3일차: 구현 및 테스트 
+ - 4일차: 구현 및 테스트 
+ - 5일차: 구현 및 테스트 
+ - 6일차: 테스트, README 작성, 깃허브 최종 등록  
+
+3) 프로그램 및 테이블 설계: 프로세스에 따른 프로그램 및 테이블 설계. 
+ - 프로세스에 대한 알고리즘 설계 
+ - 기본거래테이블과 거래의 상세내역을 저장하는 테이블 설계(부분취소를 감안함) 
+
+4) 개발환경 설정: 자바, DB, 서버, 등 버전 결정 및 프레임워크 선택 
+  - Server OS : Windows8
+  - Language : JAVA 1.8
+  - Framework : Spring 3
+  - Server : Apache Tomcat 7
+  - build tool : maven
+
+5) 설계에 대한 간략한 검증 
+ - 설계가 제약조건이나 변수를 만족시키는지에 대한 알고리즘 검토 
+
+6) 구현: 설계에 따른 프로그램 구현
+ - 각 API에 공통적으로 사용하는 기능(부가가치세 계산, 관리번호 채번, 데이터 체크) 
+ - PaymentServiceImpl 에 비즈니스로직을 구현
+ 
+ 
+7) 테스트 : 각 API를 단위테스트하며 미구현부분을 작성 후 해결 
 
 
 
@@ -63,14 +95,14 @@ Spring Framework (Maven)
 ** 4. 빌드 및 실행 방법 
 **************************************
 
----- 빌드 
+---- 빌드
 1) DB연동을 위한 mysql설치 필요
-2) eclipse 설치 후 프로젝트를 지정된 workspace에 복사 
-3) eclipse 실행 후 import>Existing Project into Workspace 프로젝트'PaymentAPIProj'선택  
+2) eclipse 설치 후 프로젝트를 지정된 workspace에 복사
+3) eclipse 실행 후 import>Existing Project into Workspace 프로젝트'PaymentAPIProj'선택
 4) tomcat 설치>이클립스 Server 탭에 tomcat 서버 추가
-5) Server에 오른쪽 마우스클릭> Add and Remove> 'PaymentAPIProj' 프로젝트 선택 > Server Start!!! 
-5) [http://localhost:8080/payapi/main.do] 해당 url 실행 
-6) 메인화면이 뜨면 테스트하고자하는 버튼을 클릭  
+5) Server에 오른쪽 마우스클릭> Add and Remove> 'PaymentAPIProj' 프로젝트 선택 > Server Start!!!
+6) [http://localhost:8080/payapi/main.do] 해당 url 실행
+7) 메인화면이 뜨면 테스트하고자하는 버튼을 클릭
 
 ----실행 
 1) 결제 API 
@@ -92,4 +124,6 @@ Spring Framework (Maven)
   > 응답 결과를 확인 ( consol에 요청 처리과정 확인: 복호화,String데이터 json포맷에 맞춰 조립과정) 
 
  4) API요청 실패시 
+
+
 
