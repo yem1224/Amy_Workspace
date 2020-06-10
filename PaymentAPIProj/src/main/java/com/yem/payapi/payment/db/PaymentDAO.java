@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.yem.payapi.common.vo.CommonVO;
 import org.apache.ibatis.session.SqlSession;
 
-import java.sql.*;
-
 /**
  * 결제처리 DAO
  * @author 은미
@@ -18,10 +16,6 @@ import java.sql.*;
  */
 @Repository
 public class PaymentDAO {
-	private final String driver ="com.mysql.jdbc.Driver";
-	private final String url ="jdbc:mysql://localhost:3306/mysql?serverTimezone=UTC";
-	private final String username ="root";
-	private final String password="dmsal.1224";
 	
 	@Autowired
 	private SqlSession sqlSession;
