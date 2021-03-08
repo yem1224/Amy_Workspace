@@ -2,34 +2,34 @@ package com.yem.payapi.common.vo;
  
 public class CommonVO {
 
-    private String unique_id; //°ü¸®¹øÈ£
+    private String unique_id; //ê´€ë¦¬ë²ˆí˜¸
     
-    private String trans_dv = ""; //°Å·¡ ±¸ºĞ(PAYMENT:°áÁ¦, CANCEL:Ãë¼Ò)
-    private String card_no; //Ä«µå¹øÈ£ 
-    private String exp_dt; //À¯È¿±â°£
+    private String trans_dv = ""; //ê±°ë˜ êµ¬ë¶„(PAYMENT:ê²°ì œ, CANCEL:ì·¨ì†Œ)
+    private String card_no; //ì¹´ë“œë²ˆí˜¸ 
+    private String exp_dt; //ìœ íš¨ê¸°ê°„
     private String cvc; //cvc
-    private String instm_month; //ÇÒºÎ°³¿ù¼ö
-    private String trans_amt; //°Å·¡±İ¾×
-    private String val_add_tax; //ºÎ°¡°¡Ä¡¼¼ 
-    private String org_unique_id; //¿ø°Å·¡°ü¸®¹øÈ£ 
-    private String org_val_add_tax; //¿ø°Å·¡ºÎ°¡°¡Ä¡¼¼
+    private String instm_month; //í• ë¶€ê°œì›”ìˆ˜
+    private String trans_amt; //ê±°ë˜ê¸ˆì•¡
+    private String val_add_tax; //ë¶€ê°€ê°€ì¹˜ì„¸ 
+    private String org_unique_id; //ì›ê±°ë˜ê´€ë¦¬ë²ˆí˜¸ 
+    private String org_val_add_tax; //ì›ê±°ë˜ë¶€ê°€ê°€ì¹˜ì„¸
     
-    private String string_data = ""; //stringµ¥ÀÌÅÍ
-    private String ctt; //ºñ°í
-    private String reg_dtm; //µî·ÏÀÏ½Ã
-    private String reg_usr; //µî·ÏÀÚ
+    private String string_data = ""; //stringë°ì´í„°
+    private String ctt; //ë¹„ê³ 
+    private String reg_dtm; //ë“±ë¡ì¼ì‹œ
+    private String reg_usr; //ë“±ë¡ì
     
-    private int trans_seq; //°Å·¡ÀÏ·Ã¹øÈ£
-    private String success_yn; //°Å·¡¼º°ø¿©ºÎ  (Y:¼º°ø,N:½ÇÆĞ)
-    private String status; // °áÀç»óÅÂ (°áÁ¦(0),ºÎºĞÃë¼Ò(1),ÀüÃ¼Ãë¼Ò(2))
-    private String pay_amt; //°áÀç»óÅÂÀÎ ±İ¾× 
-    private String pay_val_add_tax; //°áÁ¦»óÅÂÀÎ ºÎ°¡°¡Ä¡¼¼
+    private int trans_seq; //ê±°ë˜ì¼ë ¨ë²ˆí˜¸
+    private String success_yn; //ê±°ë˜ì„±ê³µì—¬ë¶€  (Y:ì„±ê³µ,N:ì‹¤íŒ¨)
+    private String status; // ê²°ì¬ìƒíƒœ (ê²°ì œ(0),ë¶€ë¶„ì·¨ì†Œ(1),ì „ì²´ì·¨ì†Œ(2))
+    private String pay_amt; //ê²°ì¬ìƒíƒœì¸ ê¸ˆì•¡ 
+    private String pay_val_add_tax; //ê²°ì œìƒíƒœì¸ ë¶€ê°€ê°€ì¹˜ì„¸
     
-    private String response_code; //ÀÀ´äÄÚµå 
-    private String response_msg; //ÀÀ´ä¸Ş¼¼Áö 
+    private String response_code; //ì‘ë‹µì½”ë“œ 
+    private String response_msg; //ì‘ë‹µë©”ì„¸ì§€ 
     
     /**
-     * °ü¸®¹øÈ£ 
+     * ê´€ë¦¬ë²ˆí˜¸ 
      * @return unique_id
      */
     public String getUniqueId() {
@@ -40,7 +40,7 @@ public class CommonVO {
     }
     
     /**
-     * °Å·¡ ±¸ºĞ(PAYMENT:°áÁ¦, CANCEL:Ãë¼Ò) 
+     * ê±°ë˜ êµ¬ë¶„(PAYMENT:ê²°ì œ, CANCEL:ì·¨ì†Œ) 
      * @return trans_dv
      */
     public String getTransDv() {
@@ -50,7 +50,7 @@ public class CommonVO {
         this.trans_dv = trans_dv;
     }
     /**
-     * Ä«µå¹øÈ£ 
+     * ì¹´ë“œë²ˆí˜¸ 
      * @return card_no
      */
     public String getCardNo() {
@@ -61,7 +61,7 @@ public class CommonVO {
     }
     
     /**
-     * À¯È¿±â°£
+     * ìœ íš¨ê¸°ê°„
      * @return exp_dt
      */
     public String getExpDt() {
@@ -83,7 +83,7 @@ public class CommonVO {
     }
     
     /***
-     * ÇÒºÎ°³¿ù¼ö
+     * í• ë¶€ê°œì›”ìˆ˜
      * @return instm_month
      */
     public String getInstmMonth() {
@@ -94,7 +94,7 @@ public class CommonVO {
     }
     
     /**
-     * °Å·¡±İ¾×
+     * ê±°ë˜ê¸ˆì•¡
      * @return trans_amt
      */
     public String getTransAmt() {
@@ -105,7 +105,7 @@ public class CommonVO {
     }
     
     /**
-     * ºÎ°¡°¡Ä¡¼¼
+     * ë¶€ê°€ê°€ì¹˜ì„¸
      * @return val_add_tax
      */
     public String getValAddTax() {
@@ -116,7 +116,7 @@ public class CommonVO {
     }
     
     /**
-     * ¿ø°Å·¡°ü¸®¹øÈ£ 
+     * ì›ê±°ë˜ê´€ë¦¬ë²ˆí˜¸ 
      * @return unique_id
      */
     public String getOrgUniqueId() {
@@ -127,7 +127,7 @@ public class CommonVO {
     }
     
     /**
-     * string µ¥ÀÌÅÍ 
+     * string ë°ì´í„° 
      * @return string_data
      */
     public String getStringData() {
@@ -138,7 +138,7 @@ public class CommonVO {
     }
     
     /**
-     * ºñ°í
+     * ë¹„ê³ 
      * @return ctt
      */
     public String getCtt() {
@@ -149,7 +149,7 @@ public class CommonVO {
     }
     
     /**
-     * µî·ÏÀÏ½Ã
+     * ë“±ë¡ì¼ì‹œ
      * @return reg_dtm
      */
     public String getRegDtm() {
@@ -160,7 +160,7 @@ public class CommonVO {
     }
     
     /**
-     * µî·ÏÀÚ
+     * ë“±ë¡ì
      * @return reg_usr
      */
     public String getRegUsr() {
@@ -171,7 +171,7 @@ public class CommonVO {
     }
     
     /**
-     * °Å·¡ÀÏ·Ã¹øÈ£
+     * ê±°ë˜ì¼ë ¨ë²ˆí˜¸
      * @return  tran_seq
      */
     public int getTransSeq() {
@@ -182,7 +182,7 @@ public class CommonVO {
 	}
 	
     /**
-     * °Å·¡¼º°ø¿©ºÎ 
+     * ê±°ë˜ì„±ê³µì—¬ë¶€ 
      * @return success_yn
      */
     public String getSuccessYn() {
@@ -194,7 +194,7 @@ public class CommonVO {
     
     
     /**
-     * °áÁ¦»óÅÂ
+     * ê²°ì œìƒíƒœ
      * @return status
      */
     public String getStatus() {
@@ -205,7 +205,7 @@ public class CommonVO {
     }
     
     /**
-     * °áÀç»óÅÂÀÎ ±İ¾× 
+     * ê²°ì¬ìƒíƒœì¸ ê¸ˆì•¡ 
      * @return pay_amt
      */
     public String getPayAmt() {
@@ -216,7 +216,7 @@ public class CommonVO {
     }
     
     /**
-     * °áÁ¦»óÅÂÀÎ ºÎ°¡°¡Ä¡¼¼
+     * ê²°ì œìƒíƒœì¸ ë¶€ê°€ê°€ì¹˜ì„¸
      * @return pay_val_add_tax
      */
     public String getPayValAddTax() {
@@ -227,7 +227,7 @@ public class CommonVO {
     }
     
     /**
-     * ÀÀ´äÄÚµå 
+     * ì‘ë‹µì½”ë“œ 
      * @return response_code
      */
     public String getResponseCode() {
@@ -238,7 +238,7 @@ public class CommonVO {
     }
     
     /**
-     * ÀÀ´ä¸Ş¼¼Áö
+     * ì‘ë‹µë©”ì„¸ì§€
      * @return response_msg
      */
     public String getResponseMsg() {
@@ -249,7 +249,7 @@ public class CommonVO {
     }
     
     /**
-     * ¿ø°Å·¡ºÎ°¡°¡Ä¡¼¼
+     * ì›ê±°ë˜ë¶€ê°€ê°€ì¹˜ì„¸ 
      * @return org_val_add_tax
      */
 	public String getOrgValAddTax() {
