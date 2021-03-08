@@ -21,7 +21,7 @@ CREATE TABLE `pay_trans_base` (
 -- pay_trans_dtls 생성 
 CREATE TABLE `pay_trans_dtls` (
   `trans_seq` INT(20) NOT NULL  AUTO_INCREMENT,
-  `unique_id` VARCHAR(20) DEFAULT NULL,
+  `unique_id` VARCHAR(20) DEFAULT NOT NULL,
      `success_yn` VARCHAR(1) DEFAULT NULL,
   `trans_dv` VARCHAR(10) DEFAULT NULL,
   `org_unique_id` VARCHAR(20) DEFAULT NULL,
